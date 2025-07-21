@@ -32,6 +32,7 @@ class State:
     STOP = 3
     PRINT = 4
 
+# stateToString Method
 def state_to_string(state):
     return {
         State.INIT: "INIT",
@@ -41,7 +42,8 @@ def state_to_string(state):
         State.PRINT: "PRINT",
     }.get(state, "UNKNOWN")
 
-MAX_LIMITS_LEFT = [1.05, 1.05, 1.75, 0, 0, 0, 0]
+#set URDF Limits
+MAX_LIMITS_LEFT = [1.05, 1.05, 1.75, 0, 0, 0, 0]  # set max motor value
 MIN_LIMITS_LEFT = [-1.05, -0.724, 0, -1.57, -1.75, -1.57, -1.75]
 MAX_LIMITS_RIGHT = [1.05, 0.742, 0, 1.57, 1.75, 1.57, 1.75]
 MIN_LIMITS_RIGHT = [-1.05, -1.05, -1.75, 0, 0, 0, 0]
@@ -154,7 +156,8 @@ class Dex3HandController:
 
     def _state_handler(self, msg: HGHandState_):
         self.state = msg
-
+    
+    # this method can send kp and kd to motors
     def rotate_motors(self, is_left_hand: bool):
         max_limits = MAX_LIMITS_LEFT if is_left_hand else MAX_LIMITS_RIGHT
         min_limits = MIN_LIMITS_LEFT if is_left_hand else MIN_LIMITS_RIGHT
@@ -186,6 +189,7 @@ class Dex3HandController:
 
         time.sleep(0.0001)
 
+    # this method can send kp and kd to motors
     def grip_hand(self, is_left_hand: bool):
         max_limits = MAX_LIMITS_LEFT if is_left_hand else MAX_LIMITS_RIGHT
         min_limits = MIN_LIMITS_LEFT if is_left_hand else MIN_LIMITS_RIGHT
@@ -207,6 +211,7 @@ class Dex3HandController:
         self.handcmd_publisher.Write(self.msg)
         time.sleep(1)
 
+    #this method can send dynamic position to motors
     def stop_motors(self):
         for i in range(MOTOR_MAX):
             ris_mode = RISMode(i, 0x01, 1)
@@ -223,12 +228,15 @@ class Dex3HandController:
         self.handcmd_publisher.Write(self.msg)
         time.sleep(1)
 
+    #this method can subscribe dds and show the position for now
     def print_state(self, is_left_hand: bool):
         max_limits = MAX_LIMITS_LEFT if is_left_hand else MAX_LIMITS_RIGHT
         min_limits = MIN_LIMITS_LEFT if is_left_hand else MIN_LIMITS_RIGHT
 
         q = np.zeros(MOTOR_MAX, dtype=np.float32)
-
+        if len(self.state.motor_state) < MOTOR_MAX:
+            print("Waiting for valid motor_state data...")
+            return
         for i in range(MOTOR_MAX):
             q[i] = self.state.motor_state[i].q
             q[i] = (q[i] - min_limits[i]) / (max_limits[i] - min_limits[i])
