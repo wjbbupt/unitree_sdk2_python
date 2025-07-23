@@ -191,19 +191,19 @@ class Custom:
 
     def LowCommandWriter(self):
         with self._cmd_lock:
-            cmd = unitree_hg_msg_dds__LowCmd_()
-            cmd.mode_pr      = Mode.PR.value
-            cmd.mode_machine = self.mode_machine
+            dds_low_command = unitree_hg_msg_dds__LowCmd_()
+            dds_low_command.mode_pr      = Mode.PR.value
+            dds_low_command.mode_machine = self.mode_machine
             # map MotorCommand -> DDS MotorCmd_
             for i in range(G1_NUM_MOTOR):
-                cmd.motor_cmd[i].mode = 1
-                cmd.motor_cmd[i].q    = self._motor_cmd.q_target[i]
-                cmd.motor_cmd[i].dq   = self._motor_cmd.dq_target[i]
-                cmd.motor_cmd[i].tau  = self._motor_cmd.tau_ff[i]
-                cmd.motor_cmd[i].kp   = self._motor_cmd.kp[i]
-                cmd.motor_cmd[i].kd   = self._motor_cmd.kd[i]
-            cmd.crc = self.crc.Crc(cmd)
-        self.pub.Write(cmd)
+                dds_low_command.motor_cmd[i].mode = 1
+                dds_low_command.motor_cmd[i].q    = self._motor_cmd.q_target[i]
+                dds_low_command.motor_cmd[i].dq   = self._motor_cmd.dq_target[i]
+                dds_low_command.motor_cmd[i].tau  = self._motor_cmd.tau_ff[i]
+                dds_low_command.motor_cmd[i].kp   = self._motor_cmd.kp[i]
+                dds_low_command.motor_cmd[i].kd   = self._motor_cmd.kd[i]
+            dds_low_command.crc = self.crc.Crc(dds_low_command)
+        self.pub.Write(dds_low_command)
 
 if __name__ == "__main__":
     print("WARNING: Please ensure there are no obstacles around the robot while running this example.")
