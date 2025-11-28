@@ -27,6 +27,9 @@ if __name__ == "__main__":
         time.sleep(1.0) # move 1s
         client.Move(0.0, 0.0, 0.0)
         client.UseRemoteCommandFromApi(False)
+        time.sleep(1.0)
+        client.MoveToAbsolutePosition(0.0, 0.0, 0.0)
+        client.MoveToIncrementPosition(0.0, 0.0, 0.0)
 
     except KeyboardInterrupt:
         client.Move(0.0, 0.0, 0.0)

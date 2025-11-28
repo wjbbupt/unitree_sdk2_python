@@ -58,3 +58,23 @@ class ObstaclesAvoidClient(Client):
         parameter = json.dumps(p)
         code, data = self._Call(OBSTACLES_AVOID_API_ID_USE_REMOTE_COMMAND_FROM_API, parameter)
         return code
+    
+    def MoveToAbsolutePosition(self, vx: float, vy: float, vyaw: float):
+        p = {}
+        p["x"] = vx
+        p["y"] = vy
+        p["yaw"] = vyaw
+        p["mode"] = 2
+        parameter = json.dumps(p)
+        code = self._CallNoReply(OBSTACLES_AVOID_API_ID_MOVE, parameter)
+        return code
+        
+    def MoveToIncrementPosition(self, vx: float, vy: float, vyaw: float):
+        p = {}
+        p["x"] = vx
+        p["y"] = vy
+        p["yaw"] = vyaw
+        p["mode"] = 1
+        parameter = json.dumps(p)
+        code = self._CallNoReply(OBSTACLES_AVOID_API_ID_MOVE, parameter)
+        return code
